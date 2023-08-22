@@ -11,7 +11,7 @@ EOF
 
 
 # Create bucket1 Using curl
-curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" --data-binary @bucket1.json "https://storage.googleapis.com/storage/v1/b?project=$DEVSHELL_PROJECT_ID"
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" --data-binary @bucket1.json "https://storage.googleapis.com/storage/v1/b?project=$PROJECT_ID"
 
 
 # Create bucket2.json
@@ -32,7 +32,7 @@ TASK 2 :
 
 
 # Upload image file to bucket1
-curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: image/jpeg" --data-binary @world.jpeg "https://storage.googleapis.com/upload/storage/v1/b/$DEVSHELL_PROJECT_ID-bucket-1/o?uploadType=media&name=quicklab.jpeg"
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: image/jpeg" --data-binary @world.jpeg "https://storage.googleapis.com/upload/storage/v1/b/$PROJECT_ID-bucket-1/o?uploadType=media&name=quicklab.jpeg"
 
 
 TASK 3 :
@@ -54,7 +54,7 @@ cat > public_access.json <<EOF
 EOF
 
 
-curl -X POST --data-binary @public_access.json -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" "https://storage.googleapis.com/storage/v1/b/$DEVSHELL_PROJECT_ID-bucket-1/o/quicklab.jpeg/acl"
+curl -X POST --data-binary @public_access.json -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" "https://storage.googleapis.com/storage/v1/b/$PROJECT_ID-bucket-1/o/quicklab.jpeg/acl"
 
 
 
