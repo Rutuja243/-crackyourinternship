@@ -20,3 +20,9 @@ gcloud compute instances create vm-bastionhost --zone=$Zone --machine-type=e2-me
 Task 5:
 
 gcloud compute instances create vm-securehost --zone=$Zone --machine-type=e2-medium --network-interface=subnet=securenetwork-subnet,no-address --network-interface=subnet=default,no-address --tags=allow-rdp-traffic --image=projects/windows-cloud/global/images/windows-server-2016-dc-v20220513
+
+Task 6:
+
+gcloud compute reset-windows-password vm-bastionhost --user app_admin --zone us-central1-a (choose Y and copy the password)
+gcloud compute reset-windows-password vm-securehost --user app_admin --zone us-central1-a (choose Y and copy the password)
+
