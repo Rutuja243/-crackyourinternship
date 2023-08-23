@@ -1,0 +1,22 @@
+export Region=<YOUR_REGION>
+export Zone=<YOUR_ZONE>
+
+Task 1:
+
+gcloud compute networks create securenetwork --subnet-mode custom
+
+Task 2:
+
+gcloud compute networks subnets create securenetwork-subnet --network=securenetwork --region $Region --range=192.168.16.0/20
+
+Task 3:
+
+gcloud compute firewall-rules create rdp-ingress-fw-rule --allow=tcp:3389 --source-ranges 0.0.0.0/0 --target-tags allow-rdp-traffic --network securenetwork
+
+Task 4:
+
+gcloud compute instances create vm-bastionhost --zone=$Zone --machine-type=e2-medium --network-interface=subnet=securenetwork-subnet --network-interface=subnet=default,no-address --tags=allow-rdp-traffic --image=projects/windows-cloud/global/images/windows-server-2016-dc-v20220513
+
+Task 5:
+
+gcloud compute instances create vm-securehost --zone=$Zone --machine-type=e2-medium --network-interface=subnet=securenetwork-subnet,no-address --network-interface=subnet=default,no-address --tags=allow-rdp-traffic --image=projects/windows-cloud/global/images/windows-server-2016-dc-v20220513
