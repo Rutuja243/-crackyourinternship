@@ -19,9 +19,10 @@ gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/${MONOLITH_IDENTIFIER}
 
 Task 2: Create a kubernetes cluster and deploy the application
 
-gcloud config set compute/zone us-central1-a
+gcloud config set compute/zone <enter region given in lab instructions>
 
-gcloud container clusters create $CLUSTER_NAME --num-nodes 3
+gcloud container clusters create $CLUSTER_NAME --num-nodes 3   
+#it will take 4-5 minutes to run
 
 gcloud container clusters get-credentials $CLUSTER_NAME
 
@@ -29,6 +30,7 @@ kubectl create deployment $MONOLITH_IDENTIFIER --image=gcr.io/${GOOGLE_CLOUD_PRO
 kubectl expose deployment $MONOLITH_IDENTIFIER --type=LoadBalancer --port 80 --target-port 8080
 
 kubectl get svc -w
+#wait till you will get the external ip address then do (ctrl + c to exit)
 
 Task 3. Create new microservices
 
@@ -44,11 +46,13 @@ kubectl create deployment $ORDERS_IDENTIFIER --image=gcr.io/${GOOGLE_CLOUD_PROJE
 kubectl expose deployment $ORDERS_IDENTIFIER --type=LoadBalancer --port 80 --target-port 8081
 
 kubectl get svc -w
+#wait till you will get the external ip address then do (ctrl + c to exit)
 
 kubectl create deployment $PRODUCTS_IDENTIFIER --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/${PRODUCTS_IDENTIFIER}:1.0.0
 kubectl expose deployment $PRODUCTS_IDENTIFIER --type=LoadBalancer --port 80 --target-port 8082
 
 kubectl get svc -w
+#wait till you will get the external ip address then do (ctrl + c to exit)
 
 Task 5. Configure and deploy the Frontend microservice
 
@@ -71,4 +75,5 @@ kubectl create deployment $FRONTEND_IDENTIFIER --image=gcr.io/${GOOGLE_CLOUD_PRO
 kubectl expose deployment $FRONTEND_IDENTIFIER --type=LoadBalancer --port 80 --target-port 8080
 
 kubectl get svc -w
+#wait till you will get the external ip address then do (ctrl + c to exit)
 
