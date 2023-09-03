@@ -110,8 +110,4 @@ WHERE
   EXTRACT(YEAR FROM start_time) = 2019
   AND subscriber_type = 'Single Trip'
   AND start_station_name = '21st & Speedway @PCL'))
-  `bigquery-public-data.austin_bikeshare.bikeshare_trips`
-WHERE 
-  EXTRACT(YEAR FROM start_time) = 2019
-  AND subscriber_type = 'Single Trip'
-  AND start_station_name = '21st & Speedway @PCL'))
+  
