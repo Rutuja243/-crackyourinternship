@@ -1,11 +1,16 @@
 #Task 1
-export API_KEY=<YOUR_API_KEY>
+
+Create api key:
+API & Services> credentials> create credentials> API KEY
+#copy api key and close
 
 #Task 2. Create synthetic speech from text using the Text-to-Speech API
 
 #connect to the VM instance <Instance name> provisioned for you via SSH.
 
 source venv/bin/activate
+
+export API_KEY=<YOUR_API_KEY>
 
 nano synthesize-text.json
 #enter following code
@@ -79,7 +84,7 @@ python tts_decode.py --input "synthesize-text.txt" --output "synthesize-text-aud
 
 #For this task, connect to the VM instance <Instance name> provisioned for you via SSH.
 
-nano <file_name>
+nano <your_json_file>
 #enter below code in nano editor
  {
   "config": {
@@ -100,6 +105,10 @@ curl -s -X POST -H "Content-Type: application/json" --data-binary @<your_json_fi
 #For this task, connect to the VM instance Instance name provisioned for you via SSH
 
 # Set the variables for the Translation API request
+
+task_4_sentence=""
+task_4_file=""
+
 source_lang="ja"
 target_lang="en"
 
@@ -128,6 +137,9 @@ fi
 #Task 5. Detect a language with the Cloud Translation API
 
 #For this task, connect to the VM instance Instance name provisioned for you via SSH.
+
+task_5_sentence=""
+task_5_file=""
 
 # URL-decode the sentence
 decoded_sentence=$(python -c "import urllib.parse; print(urllib.parse.unquote('$task_5_sentence'))")
