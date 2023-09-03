@@ -1,0 +1,111 @@
+#Task 1
+export API_KEY=<YOUR_API_KEY>
+
+#Task 2. Create synthetic speech from text using the Text-to-Speech API
+
+#connect to the VM instance <Instance name> provisioned for you via SSH.
+
+source venv/bin/activate
+
+nano synthesize-text.json
+#enter following code
+{
+    'input':{
+        'text':'Cloud Text-to-Speech API allows developers to include
+           natural-sounding, synthetic human speech as playable audio in
+           their applications. The Text-to-Speech API converts text or
+           Speech Synthesis Markup Language (SSML) input into audio data
+           like MP3 or LINEAR16 (the encoding used in WAV files).'
+    },
+    'voice':{
+        'languageCode':'en-gb',
+        'name':'en-GB-Standard-A',
+        'ssmlGender':'FEMALE'
+    },
+    'audioConfig':{
+        'audioEncoding':'MP3'
+    }
+}
+
+#To exit nano editor press ctrl+x then type y and enter.
+
+curl -H "Authorization: Bearer "$(gcloud auth application-default print-access-token) \
+  -H "Content-Type: application/json; charset=utf-8" \
+  -d @synthesize-text.json "https://texttospeech.googleapis.com/v1/text:synthesize" \
+  > synthesize-text.txt
+
+cat synthesize-text.txt
+
+nano tts_decode.py
+
+#enter following code
+
+import argparse
+from base64 import decodebytes
+import json
+"""
+Usage:
+        python tts_decode.py --input "synthesize-text.txt" \
+        --output "synthesize-text-audio.mp3"
+"""
+def decode_tts_output(input_file, output_file):
+    """ Decode output from Cloud Text-to-Speech.
+    input_file: the response from Cloud Text-to-Speech
+    output_file: the name of the audio file to create
+    """
+    with open(input_file) as input:
+        response = json.load(input)
+        audio_data = response['audioContent']
+        with open(output_file, "wb") as new_file:
+            new_file.write(decodebytes(audio_data.encode('utf-8')))
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="Decode output from Cloud Text-to-Speech",
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--input',
+                       help='The response from the Text-to-Speech API.',
+                       required=True)
+    parser.add_argument('--output',
+                       help='The name of the audio file to create',
+                       required=True)
+    args = parser.parse_args()
+    decode_tts_output(args.input, args.output)
+
+#To exit nano editor press ctrl+x then type y and enter.
+
+python tts_decode.py --input "synthesize-text.txt" --output "synthesize-text-audio.mp3"
+
+#Task 3. Perform speech to text transcription with the Cloud Speech API:
+
+#For this task, connect to the VM instance <Instance name> provisioned for you via SSH.
+
+nano <file_name>
+#enter below code in nano editor
+ {
+  "config": {
+      "encoding":"FLAC",
+      "languageCode": "fr"
+  },
+  "audio": {
+      "uri":"gs://cloud-samples-data/speech/corbeau_renard.flac"
+  }
+}
+#To exit nano editor press ctrl+x then type y and enter.
+
+curl -s -X POST -H "Content-Type: application/json" --data-binary @<your_json_file> \
+"https://speech.googleapis.com/v1/speech:recognize?key=${API_KEY}" > <your_result_file>
+
+#Task 4. Translate text with the Cloud Translation API
+
+#For this task, connect to the VM instance Instance name provisioned for you via SSH
+
+TEXT=<TEXT GIVEN>
+curl "https://translation.googleapis.com/language/translate/v2?target=es&key=${API_KEY}&q=${TEXT}" > <YOUR_RESULT_FILE>
+
+#Task 5. Detect a language with the Cloud Translation API
+
+#For this task, connect to the VM instance Instance name provisioned for you via SSH.
+
+TEXT="<FILE_NAME>"
+curl "https://translation.googleapis.com/language/translate/v2/detect?key=${API_KEY}&q=${TEXT}" > <RESULT_FILE_NAME>
+
