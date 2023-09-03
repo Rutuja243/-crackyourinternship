@@ -1,16 +1,17 @@
 #Task 1. Create a dataset to store your machine learning models
- give name royalbike to your dataset
+ give name austin to your dataset
 
 #Task 2. Create a forecasting BigQuery machine learning model
 
-CREATE OR REPLACE MODEL royalbike.model
+CREATE OR REPLACE MODEL austin.location_model
 OPTIONS
   (model_type='linear_reg', labels=['duration_minutes']) AS
 SELECT
     start_station_name,
     EXTRACT(HOUR FROM start_time) AS start_hour,
     EXTRACT(DAYOFWEEK FROM start_time) AS day_of_week,
-    duration_minutes
+    duration_minutes,
+    address as location
 FROM
     `bigquery-public-data.austin_bikeshare.bikeshare_trips` AS trips
 JOIN
@@ -24,7 +25,7 @@ WHERE
 
 #Task 3. Create the second machine learning model
 
-CREATE OR REPLACE MODEL royalbike.subscriber
+CREATE OR REPLACE MODEL austin.subscriber_model
 OPTIONS
   (model_type='linear_reg', labels=['duration_minutes']) AS
 SELECT
@@ -44,12 +45,13 @@ SELECT
   SQRT(mean_squared_error) AS rmse,
   mean_absolute_error
 FROM
-  ML.EVALUATE(MODEL royalbike.model, (
+  ML.EVALUATE(MODEL austin.location_model, (
   SELECT
     start_station_name,
     EXTRACT(HOUR FROM start_time) AS start_hour,
     EXTRACT(DAYOFWEEK FROM start_time) AS day_of_week,
-    duration_minutes
+    duration_minutes,
+    address as location
   FROM
     `bigquery-public-data.austin_bikeshare.bikeshare_trips` AS trips
   JOIN
@@ -60,13 +62,14 @@ FROM
 )
 
 
+
 #evaluate second model
 
 SELECT
   SQRT(mean_squared_error) AS rmse,
   mean_absolute_error
 FROM
-  ML.EVALUATE(MODEL royalbike.subscriber, (
+  ML.EVALUATE(MODEL austin.subscriber_model, (
   SELECT
     start_station_name,
     EXTRACT(HOUR FROM start_time) AS start_hour,
@@ -95,13 +98,18 @@ ORDER BY
 
 
 SELECT AVG(predicted_duration_minutes) AS average_predicted_trip_length
-FROM ML.predict(MODEL royalbike.subscriber, (
+FROM ML.predict(MODEL austin.subscriber_model, (
 SELECT
     start_station_name,
     EXTRACT(HOUR FROM start_time) AS start_hour,
     subscriber_type,
     duration_minutes
 FROM
+  `bigquery-public-data.austin_bikeshare.bikeshare_trips`
+WHERE 
+  EXTRACT(YEAR FROM start_time) = 2019
+  AND subscriber_type = 'Single Trip'
+  AND start_station_name = '21st & Speedway @PCL'))
   `bigquery-public-data.austin_bikeshare.bikeshare_trips`
 WHERE 
   EXTRACT(YEAR FROM start_time) = 2019
